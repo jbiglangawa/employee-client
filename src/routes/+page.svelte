@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+
+	const toastStore = getToastStore();
 
 	let username: string = '';
 	let password: string = '';
@@ -18,6 +21,10 @@
 			// Exception handling
 		}).then(res => {
 			if(res.token) {
+				toastStore.trigger({
+					message: "Logged in successfully",
+					background: 'variant-filled-success'
+				})
 				goto('/employee')
 			}
 		})
