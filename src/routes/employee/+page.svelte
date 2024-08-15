@@ -29,6 +29,7 @@
 
     const navigate = (page) => {
         currentPage = page;
+        console.log(currentPage)
         getEmployees();
     }
 </script>
@@ -65,7 +66,7 @@
             <button class="btn mx-2" id="nav-start" disabled={navForward} on:click={() => navigate(0)}><Fa icon={faAngleDoubleLeft} /></button>
             <button class="btn mx-2" id="nav-backward" disabled={navForward} on:click={() => navigate(currentPage - 1)}><Fa icon={faAngleLeft} /></button>
             <button class="btn mx-2" id="nav-forward" disabled={navBackward} on:click={() => navigate(currentPage + 1)}><Fa icon={faAngleRight} /></button>
-            <button class="btn mx-2" id="nav-end" disabled={navBackward} on:click={getEmployees} on:click={() => navigate(lastPage)}><Fa icon={faAngleDoubleRight} /></button>
+            <button class="btn mx-2" id="nav-end" disabled={navBackward} on:click={() => navigate(lastPage)}><Fa icon={faAngleDoubleRight} /></button>
         </div>
     </div>
 </div>
