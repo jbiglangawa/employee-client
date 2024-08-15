@@ -30,10 +30,6 @@
 </AppShell>
 
 <style>
-	.app-bar {
-		padding: 0 10%;
-	}
-
 	.header-icon {
 		height: 50px;
 	}

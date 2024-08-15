@@ -31,7 +31,8 @@ const sendAuthRequest = (query: String, variables: any, cookies: Cookies) => {
 	});
 };
 
-const getAllEmployees = (page: PageSize, cookies: Cookies) => {
+const getAllEmployees = (pageSize: PageSize, cookies: Cookies) => {
+	console.log(pageSize);
 	return sendAuthRequest(
 		`query GetEmployees($pageSize: PageSize!) {
             getEmployees(pageSize: $pageSize) {
@@ -54,12 +55,7 @@ const getAllEmployees = (page: PageSize, cookies: Cookies) => {
                 totalCount
             }
         }`,
-		{
-			pageSize: {
-				page: Number(page),
-				size: 10
-			}
-		},
+		{ pageSize },
 		cookies
 	);
 };

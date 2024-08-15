@@ -8,7 +8,6 @@ const clearTokenFromStorage = (cookies: Cookies) => {
 
 const getTokenFromStorage = (cookies: Cookies) => {
 	let cookie = cookies.get(TOK3N_KEY);
-	console.log('COOKIE  ', cookie);
 	if (cookie && cookie != 'null') {
 		return JSON.parse(cookie);
 	} else {
