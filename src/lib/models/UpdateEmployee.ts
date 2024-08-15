@@ -1,7 +1,6 @@
-import type CreateEmployee from './CreateEmployee';
+import type GetEmployee from './GetEmployee';
 
-export default interface UpdateEmployee extends CreateEmployee {
-	employeeId: Number;
+export default interface UpdateEmployee extends GetEmployee {
 	clearContacts: Boolean;
 	clearAddresses: Boolean;
 }

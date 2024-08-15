@@ -1,5 +1,6 @@
 import { SERVER_URL } from '$env/static/private';
 import type { LoginForm } from '$lib/models/LoginForm';
+import util from '$lib/util.js';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, cookies }) {
@@ -26,10 +27,7 @@ export async function POST({ request, cookies }) {
 
 	if (res.status == 200) {
 		const resJson = await res.json();
-		cookies.set('JESSION_TKEN', JSON.stringify(resJson.data.getToken), {
-			path: ''
-		});
-		console.log(resJson);
+		util.saveTokenToStorage(resJson.data.getToken, cookies);
 		return json(resJson.data.getToken);
 	}
 	// Exception handling

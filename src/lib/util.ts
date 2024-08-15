@@ -1,13 +1,14 @@
-import * as Cookies from 'es-cookie';
+import type { Cookies } from '@sveltejs/kit';
 
 const TOK3N_KEY = 'JESSION_TKEN';
 
-const clearTokenFromStorage = () => {
-	Cookies.remove(TOK3N_KEY);
+const clearTokenFromStorage = (cookies: Cookies) => {
+	cookies.delete(TOK3N_KEY, { path: '/' });
 };
 
-const getTokenFromStorage = () => {
-	let cookie = Cookies.get(TOK3N_KEY);
+const getTokenFromStorage = (cookies: Cookies) => {
+	let cookie = cookies.get(TOK3N_KEY);
+	console.log('COOKIE  ', cookie);
 	if (cookie && cookie != 'null') {
 		return JSON.parse(cookie);
 	} else {
@@ -16,12 +17,14 @@ const getTokenFromStorage = () => {
 	}
 };
 
-const saveTokenToStorage = (token: String) => {
-	Cookies.set(TOK3N_KEY, JSON.stringify(token));
+const saveTokenToStorage = (token: String, cookies: Cookies) => {
+	cookies.set(TOK3N_KEY, JSON.stringify(token), {
+		path: '/'
+	});
 };
 
-const isUserAndAdmin = () => {
-	const roles = getTokenFromStorage().roles;
+const isUserAndAdmin = (cookies: Cookies) => {
+	const roles = getTokenFromStorage(cookies).roles;
 	return roles.includes('ROLE_USER') && roles.includes('ROLE_ADMIN');
 };
 
