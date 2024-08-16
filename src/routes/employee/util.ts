@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const calculateAge = (date: moment.Moment): number => {
+export const calculateAge = (date: string): number => {
 	return Math.trunc(moment().diff(date, 'years'));
 };
 

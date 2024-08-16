@@ -1,19 +1,25 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
 	import LegalMatchIcon from '$lib/images/legalmatch-icon.png';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup, initializeStores, Toast } from '@skeletonlabs/skeleton';
+	import Registration from './registration.svelte';
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();
 
+	const modalRegistry: Record<string, ModalComponent> = {
+        registerModal: { ref: Registration },
+    };
 </script>
 
+<Modal components={modalRegistry} />
 <Toast />
+
 <AppShell>
 	<svelte:fragment slot="header">
 		<AppBar class="app-bar">

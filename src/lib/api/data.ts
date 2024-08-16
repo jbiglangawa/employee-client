@@ -25,7 +25,7 @@ const sendAuthRequest = (query: String, variables: any, cookies: Cookies) => {
 		})
 	}).then((res) => {
 		if (res.status == 403) {
-			window.location.href = '/login';
+			// window.location.href = '/login';
 		}
 		return res.json();
 	});
@@ -98,7 +98,7 @@ const createEmployee = (employee: CreateEmployee, cookies: Cookies) => {
         mutation CreateEmployee($employee: CreateEmployeeInput!) {
             createEmployee(employee: $employee)
         }`,
-		employee,
+		{ employee },
 		cookies
 	);
 };

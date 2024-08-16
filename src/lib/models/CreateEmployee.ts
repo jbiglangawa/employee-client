@@ -1,4 +1,4 @@
-import type { Address } from 'cluster';
+import type Address from './Address';
 import type Contact from './Contact';
 
 export default interface CreateEmployee {
