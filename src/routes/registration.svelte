@@ -41,7 +41,6 @@
 			addresses
 		}).then((res) => {
 			modalStore.close();
-			console.log('updating here', res);
 			lastEmployeeId.update(() => res.data.createEmployee);
 		});
 	}

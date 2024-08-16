@@ -1,6 +1,5 @@
 import Data from '$lib/api/data.js';
 import type CreateEmployee from '$lib/models/CreateEmployee.js';
-import type PageSize from '$lib/models/PageSize.js';
 import { json } from '@sveltejs/kit';
 
 export async function GET({ url, cookies }) {
