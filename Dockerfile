@@ -1,10 +1,15 @@
-FROM node:21-alpine
+FROM node:22.6.0-bookworm
 
 WORKDIR /usr/src/app
 COPY package*.json ./
+
 RUN npm install --force
+
 COPY . .
+
 RUN npm run build
-EXPOSE 5173
+
+EXPOSE 3000
 ENV NODE_ENV=production
-CMD ["npm", "start"]
+
+CMD ["node", "build"]

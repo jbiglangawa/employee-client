@@ -1,38 +1,27 @@
-# create-svelte
+# Employee Client
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+This is my entry for the Frontend (Part 2) task.
 
-## Creating a project
+This will be dependent on the Backend Service used in the initial task,
+and it should look for http://localhost:8080/graphql. Running docker-compose
+for the backend service and this separately will enable communication with each other.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Getting Started
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+The technologies I've used are as follows:
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+1. SvelteKit
+2. TypeScript
+3. Vite
+4. Skeleton UI
+5. ES Lint
+6. PostCSS
+7. Prettier
 
-## Developing
+Before anything else, run `npm install` to install the dependencies.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+To spin up the project, either kickstart it via `docker compose up -d` or
+do `docker build -t "employee-client" .` and afterwards create a container based on the
+image via `docker run -d -p80:3000 employee-client`.
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+If you'd like to try spinning up the development cycle, use the command `npm run dev`.
