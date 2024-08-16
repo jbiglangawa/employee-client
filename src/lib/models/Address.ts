@@ -1,6 +1,6 @@
 export default interface Address {
   addressId?: Number;
-  address1: String;
-  address2: String;
-  isPrimary: boolean;
+  address1?: String;
+  address2?: String;
+  isPrimary?: boolean;
 }

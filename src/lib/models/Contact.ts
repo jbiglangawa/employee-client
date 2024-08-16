@@ -1,5 +1,5 @@
 export default interface Contact {
   contactId?: Number;
-  contactInfo: String;
-  isPrimary: boolean;
+  contactInfo?: String;
+  isPrimary?: boolean;
 }

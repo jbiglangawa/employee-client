@@ -1,11 +1,8 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Modal, type ModalComponent, storePopup, initializeStores, Toast } from '@skeletonlabs/skeleton';
 	import LegalMatchIcon from '$lib/images/legalmatch-icon.png';
-
-	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { storePopup, initializeStores, Toast } from '@skeletonlabs/skeleton';
 	import Registration from './registration.svelte';
 	import { sendRequest } from '$lib/connector';
 	import { goto, invalidateAll } from '$app/navigation';

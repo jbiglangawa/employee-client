@@ -5,9 +5,6 @@
 
 	const toastStore = getToastStore();
 
-	/** @type {import('./$types').PageData} */
-	export let data;
-
 	let username: string = '';
 	let password: string = '';
 
