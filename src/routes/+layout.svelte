@@ -7,6 +7,11 @@
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup, initializeStores, Toast } from '@skeletonlabs/skeleton';
 	import Registration from './registration.svelte';
+	import { sendRequest } from '$lib/connector';
+	import { goto, invalidateAll } from '$app/navigation';
+
+	/** @type {import('./$types').PageData} */
+	export let data;
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -14,6 +19,15 @@
 
 	const modalRegistry: Record<string, ModalComponent> = {
 		registerModal: { ref: Registration }
+	};
+
+	const logout = () => {
+		sendRequest('/api/logout', 'POST').then((res) => {
+			if (res.success) {
+				invalidateAll()
+				goto('/');
+			}
+		});
 	};
 </script>
 
@@ -26,7 +40,12 @@
 			<svelte:fragment slot="lead">
 				<img class="header-icon" src={LegalMatchIcon} alt="legalmatch-icon" />
 			</svelte:fragment>
-			<svelte:fragment slot="trail"></svelte:fragment>
+			
+			<svelte:fragment slot="trail">
+				{#if data?.post?.isTokenReady}
+					<button class="btn" on:click={logout}>logout</button>
+				{/if}
+			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
 

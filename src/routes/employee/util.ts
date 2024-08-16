@@ -4,7 +4,8 @@ export const calculateAge = (date: string): number => {
 	return Math.trunc(moment().diff(date, 'years'));
 };
 
-export const getLengthOfStay = (date: moment.Moment): string => {
+export const getLengthOfStay = (hireDate: string): string => {
+	let date = moment(hireDate);
 	const yearsDiff = moment().diff(date, 'years');
 	const monthsDiff: number = moment().diff(date, 'months');
 	let formatted: string[] = [];

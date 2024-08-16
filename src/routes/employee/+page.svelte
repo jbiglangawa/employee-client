@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import moment from 'moment';
 	import Fa from 'svelte-fa';
 	import {
 		faAngleDoubleLeft,
@@ -8,12 +7,13 @@
 		faAngleLeft,
 		faAngleRight,
 		faEdit,
+		faEye,
 		faTrash
 	} from '@fortawesome/free-solid-svg-icons';
 	import { calculateAge, getLengthOfStay } from './util';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import type GetEmployee from '$lib/models/GetEmployee';
-	import { sendRequest } from '$lib/connector/apiconnector';
+	import { sendRequest } from '$lib/connector';
 	import { lastEmployeeId } from '$lib/store';
 	import { browser } from '$app/environment';
 
@@ -23,6 +23,9 @@
 		type: 'component',
 		component: 'registerModal'
 	};
+
+	/** @type {import('./$types').PageData} */
+	export let data;
 
 	/* States */
 	let employees: GetEmployee[] = [];
@@ -74,9 +77,11 @@
 <div class="flex justify-center">
 	<div class="employee-wrapper">
 		<section class="flex w-full mb-2">
-			<button type="button" class="btn variant-filled-surface" on:click={() => onAddEmployee()}>
-				<span>Add</span>
-			</button>
+			{#if data.post.isUserAndAdmin}
+				<button type="button" class="btn variant-filled-surface" on:click={() => onAddEmployee()}>
+					<span>Add</span>
+				</button>
+			{/if}
 		</section>
 		<div class="table-container">
 			<table class="table table-hover table-comfortable">
@@ -102,15 +107,21 @@
 									: ''}</td
 							>
 							<td>{primaryContact ? primaryContact.contactInfo : ''}</td>
-							<td>{calculateAge(row.birthDate)}</td>
-							<td>{getLengthOfStay(moment(row.hireDate))}</td>
+							<td>{calculateAge(row.birthDate.valueOf())}</td>
+							<td>{getLengthOfStay(row.hireDate.valueOf())}</td>
 							<td class="table-cell-fit">
-								<button class="btn" on:click={() => onAddEmployee(row.employeeId)}
-									><Fa icon={faEdit} /></button
-								>
-								<button class="btn" on:click={() => onDeleteEmployee(row.employeeId)}
-									><Fa icon={faTrash} /></button
-								>
+								{#if data.post.isUserAndAdmin}
+									<button class="btn" on:click={() => onAddEmployee(row.employeeId)}
+										><Fa icon={faEdit} /></button
+									>
+									<button class="btn" on:click={() => onDeleteEmployee(row.employeeId)}
+										><Fa icon={faTrash} /></button
+									>
+								{:else}
+									<button class="btn" on:click={() => onAddEmployee(row.employeeId)}
+										><Fa icon={faEye} /></button
+									>
+								{/if}
 							</td>
 						</tr>
 					{/each}

@@ -1,35 +1,40 @@
-import type { Cookies } from '@sveltejs/kit';
+import { type Cookies } from "@sveltejs/kit";
 
-const TOK3N_KEY = 'JESSION_TKEN';
+export const TOK3N_KEY = "JESSION_TKEN";
 
 const clearTokenFromStorage = (cookies: Cookies) => {
-	cookies.delete(TOK3N_KEY, { path: '/' });
+  cookies.delete(TOK3N_KEY, { path: "/" });
 };
 
 const getTokenFromStorage = (cookies: Cookies) => {
-	let cookie = cookies.get(TOK3N_KEY);
-	if (cookie && cookie != 'null') {
-		return JSON.parse(cookie);
-	} else {
-		// Navigate to login page
-		// window.location.href = '/login';
-	}
+  let cookie = cookies.get(TOK3N_KEY);
+  if (cookie && cookie != "null") {
+    return JSON.parse(cookie);
+  } else {
+    throw "Failed to authorize user";
+  }
 };
 
 const saveTokenToStorage = (token: String, cookies: Cookies) => {
-	cookies.set(TOK3N_KEY, JSON.stringify(token), {
-		path: '/'
-	});
+  cookies.set(TOK3N_KEY, JSON.stringify(token), {
+    path: "/",
+  });
 };
 
-const isUserAndAdmin = (cookies: Cookies) => {
-	const roles = getTokenFromStorage(cookies).roles;
-	return roles.includes('ROLE_USER') && roles.includes('ROLE_ADMIN');
+const isUserAndAdmin = (cookies: Cookies): boolean => {
+  const token = getTokenFromStorage(cookies);
+  if (token?.roles) {
+    return (
+      token.roles.includes("ROLE_USER") && token.roles.includes("ROLE_ADMIN")
+    );
+  } else {
+    return false;
+  }
 };
 
 export default {
-	clearTokenFromStorage,
-	getTokenFromStorage,
-	saveTokenToStorage,
-	isUserAndAdmin
+  clearTokenFromStorage,
+  getTokenFromStorage,
+  saveTokenToStorage,
+  isUserAndAdmin,
 };

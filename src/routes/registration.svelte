@@ -1,14 +1,15 @@
 <script lang="ts">
-	import type { SvelteComponent } from 'svelte';
-
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import Fa from 'svelte-fa';
 	import { faClose, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 	import moment from 'moment';
 	import type Contact from '$lib/models/Contact';
 	import type Address from '$lib/models/Address';
-	import { sendRequest } from '$lib/connector/apiconnector';
+	import { sendRequest } from '$lib/connector';
 	import { lastEmployeeId } from '$lib/store';
+
+	/** @type {import('./$types').PageData} */
+	import { page } from '$app/stores';
 
 	const modalStore = getModalStore();
 
@@ -26,7 +27,9 @@
 
 	// Update Scenario will occur if an employee ID is detected
 	if ($modalStore[0].value) {
-		sendRequest('/api/employee/byId?id=' + $modalStore[0].value.employeeId).then((res) => {
+		sendRequest(
+			'/api/employee/byId?id=' + $modalStore[0].value.employeeId
+		).then((res) => {
 			employeeId = res.employeeId;
 			firstName = res.firstName;
 			lastName = res.lastName;
@@ -125,19 +128,33 @@
 		<article class="edit-form-dialog">
 			<header class="text-2xl font-bold ml-5">
 				<button aria-label="Close" id="close-dialog"></button>
-				<h3 id="edit-employee-dialog-title" class="mb-2">NEW EMPLOYEE REGISTRATION</h3>
+				<h3 id="edit-employee-dialog-title" class="mb-2">
+					{#if employeeId == 0}
+						NEW EMPLOYEE REGISTRATION
+					{:else}
+						UPDATE EMPLOYEE INFORMATION
+					{/if}
+				</h3>
 			</header>
 			<section class="ml-5">
-				<button class="btn variant-filled-primary" id="save" on:click={onFormSubmit}>
-					<Fa icon={faSave}></Fa> &nbspSave
-				</button>
-				<button
-					id="delete"
-					class="btn variant-ghost {employeeId == 0 ? 'hidden' : ''}"
-					on:click={deleteEmployee}
-				>
-					<Fa icon={faTrash} /> &nbspDelete
-				</button>
+				{#if $page.data.post.isUserAndAdmin}
+					<button
+						class="btn variant-filled-primary"
+						id="save"
+						on:click={onFormSubmit}
+					>
+						<Fa icon={faSave}></Fa> &nbspSave
+					</button>
+				{#if employeeId > 0}
+					<button
+						id="delete"
+						class="btn variant-ghost"
+						on:click={deleteEmployee}
+					>
+						<Fa icon={faTrash} /> &nbspDelete
+					</button>
+				{/if}
+				{/if}
 			</section>
 			<form id="regis-form" class="modal-form flex mt-5">
 				<div class="regis-form contact-form form-left">
@@ -155,6 +172,7 @@
 							class="input"
 							bind:value={firstName}
 							required
+							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="firstName-helper"></small>
 					</label>
@@ -169,6 +187,7 @@
 							data-static-disabled
 							class="input"
 							bind:value={lastName}
+							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="lastName-helper"></small>
 					</label>
@@ -182,6 +201,7 @@
 							maxlength="255"
 							class="input"
 							bind:value={middleName}
+							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="middleName-helper"></small>
 					</label>
@@ -194,6 +214,7 @@
 							aria-label="Birth Date"
 							class="input"
 							bind:value={birthDate}
+							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="birthDate-helper"></small>
 					</label>
@@ -207,6 +228,7 @@
 							maxlength="255"
 							class="input"
 							bind:value={gender}
+							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="gender-helper"></small>
 					</label>
@@ -220,6 +242,7 @@
 							maxlength="255"
 							class="input"
 							bind:value={maritalStatus}
+							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="maritalStatus-helper"></small>
 					</label>
@@ -233,6 +256,7 @@
 							maxlength="255"
 							class="input"
 							bind:value={currentPosition}
+							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="currentPosition-helper"></small>
 					</label>
@@ -245,6 +269,7 @@
 							aria-label="Date Hired"
 							class="input"
 							bind:value={hireDate}
+							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="hireDate-helper"></small>
 					</label>
@@ -268,25 +293,37 @@
 											placeholder="Contact Information"
 											aria-label="Contact Information"
 											bind:value={contact.contactInfo}
+											disabled={!$page.data.post.isUserAndAdmin}
 										/>
 										<small id="contact-info-{i}-helper"></small>
 									</th>
 									<td
-										><input type="checkbox" class="checkbox" bind:checked={contact.isPrimary} />
+										><input
+											type="checkbox"
+											class="checkbox"
+											bind:checked={contact.isPrimary}
+											disabled={!$page.data.post.isUserAndAdmin}
+										/>
 									</td>
-									<td
-										><button class="btn" on:click={() => removeFromArray('contact', i)}
-											><Fa icon={faClose} /></button
-										></td
-									>
+									<td>
+										{#if $page.data.post.isUserAndAdmin}
+											<button
+												class="btn"
+												on:click={() => removeFromArray('contact', i)}
+											>
+												<Fa icon={faClose} />
+											</button>
+										{/if}
+									</td>
 								</tr>
 							{/each}
 						</tbody>
 					</table>
+					{#if $page.data.post.isUserAndAdmin}
 					<div class="text-right">
 						<button on:click={() => addNew('contact')}>Add new</button>
 					</div>
-
+					{/if}
 					<h6 class="mt-5 mb-2">Address Info:</h6>
 					<table class="table table-hover">
 						<thead>
@@ -306,6 +343,7 @@
 											placeholder="Address 1"
 											aria-label="Address 1"
 											bind:value={address.address1}
+											disabled={!$page.data.post.isUserAndAdmin}
 										/>
 										<small id="address1-{i}-helper"></small>
 									</th>
@@ -317,24 +355,37 @@
 											placeholder="Address 2"
 											aria-label="Address 2"
 											bind:value={address.address2}
+											disabled={!$page.data.post.isUserAndAdmin}
 										/>
 										<small id="address2-{i}-helper"></small>
 									</td>
 									<td
-										><input type="checkbox" class="checkbox" bind:checked={address.isPrimary} /></td
+										><input
+											type="checkbox"
+											class="checkbox"
+											bind:checked={address.isPrimary}
+											disabled={!$page.data.post.isUserAndAdmin}
+										/></td
 									>
-									<td
-										><button class="btn"
-											><Fa icon={faClose} on:click={() => removeFromArray('address', i)} /></button
-										></td
+									<td>
+										{#if $page.data.post.isUserAndAdmin}
+											<button class="btn">
+												<Fa
+													icon={faClose}
+													on:click={() => removeFromArray('address', i)}
+												/>
+											</button>
+										{/if}</td
 									>
 								</tr>
 							{/each}
 						</tbody>
 					</table>
+					{#if $page.data.post.isUserAndAdmin}
 					<div class="text-right">
-						<button on:click={() => addNew('address')}>Add new</button>
+							<button on:click={() => addNew('address')}>Add new</button>
 					</div>
+					{/if}
 				</div>
 			</form>
 		</article>
