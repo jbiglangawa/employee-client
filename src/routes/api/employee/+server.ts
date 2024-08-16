@@ -13,8 +13,6 @@ export async function GET({ url, cookies }) {
 
 export async function POST({ request, cookies }) {
 	const employee: CreateEmployee = await request.json();
-	console.log(employee);
 	const res = await Data.createEmployee(employee, cookies);
-	console.log(JSON.stringify(res));
 	return json({ ...res });
 }

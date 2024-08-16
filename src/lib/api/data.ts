@@ -1,6 +1,5 @@
 import { SERVER_URL } from '$env/static/private';
 import type CreateEmployee from '$lib/models/CreateEmployee';
-import type { LoginForm } from '$lib/models/LoginForm';
 import type PageSize from '$lib/models/PageSize';
 import type UpdateEmployee from '$lib/models/UpdateEmployee';
 import type { Cookies } from '@sveltejs/kit';

@@ -13,8 +13,8 @@
 	initializeStores();
 
 	const modalRegistry: Record<string, ModalComponent> = {
-        registerModal: { ref: Registration },
-    };
+		registerModal: { ref: Registration }
+	};
 </script>
 
 <Modal components={modalRegistry} />
@@ -24,11 +24,9 @@
 	<svelte:fragment slot="header">
 		<AppBar class="app-bar">
 			<svelte:fragment slot="lead">
-				<img class="header-icon" src={LegalMatchIcon} alt='legalmatch-icon'>
+				<img class="header-icon" src={LegalMatchIcon} alt="legalmatch-icon" />
 			</svelte:fragment>
-			<svelte:fragment slot="trail">
-
-			</svelte:fragment>
+			<svelte:fragment slot="trail"></svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
 

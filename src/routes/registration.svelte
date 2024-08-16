@@ -7,6 +7,8 @@
 	import moment from 'moment';
 	import type Contact from '$lib/models/Contact';
 	import type Address from '$lib/models/Address';
+	import { sendRequest } from '$lib/connector/apiconnector';
+	import { lastEmployeeId } from '$lib/store';
 
 	export let parent: SvelteComponent;
 
@@ -25,28 +27,23 @@
 
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(firstName);
-		modalStore.close();
 
-		fetch('/api/employee', {
-			method: 'POST',
-			body: JSON.stringify({
-				firstName,
-				lastName,
-				middleName,
-				birthDate: formatDate(birthDate),
-				gender,
-				maritalStatus,
-				currentPosition,
-				hireDate: formatDate(hireDate),
-				contacts,
-				addresses
-			}),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then((res) => res.json())
-			.then((res) => console.log(res));
+		sendRequest('/api/employee', 'POST', {
+			firstName,
+			lastName,
+			middleName,
+			birthDate: formatDate(birthDate),
+			gender,
+			maritalStatus,
+			currentPosition,
+			hireDate: formatDate(hireDate),
+			contacts,
+			addresses
+		}).then((res) => {
+			modalStore.close();
+			console.log('updating here', res);
+			lastEmployeeId.update(() => res.data.createEmployee);
+		});
 	}
 
 	const formatDate = (date: string) => {

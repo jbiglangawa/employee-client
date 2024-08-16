@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { sendRequest } from '$lib/connector/apiconnector';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
@@ -8,26 +9,15 @@
 	let password: string = '';
 
 	async function login() {
-		fetch('/api/token', {
-			method: 'POST',
-			body: JSON.stringify({username, password}),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(res => {
-			if(res.status == 200) {
-				return res.json()
-			}
-			// Exception handling
-		}).then(res => {
-			if(res.token) {
+		sendRequest('/api/token', 'POST', { username, password }).then((res) => {
+			if (res.token) {
 				toastStore.trigger({
-					message: "Logged in successfully",
+					message: 'Logged in successfully',
 					background: 'variant-filled-success'
-				})
-				goto('/employee')
+				});
+				goto('/employee');
 			}
-		})
+		});
 	}
 </script>
 
@@ -37,7 +27,7 @@
 			<span>Username</span>
 			<input class="input" type="text" placeholder="Username" bind:value={username} />
 		</label>
-		
+
 		<label class="label">
 			<span>Password</span>
 			<input class="input" type="password" placeholder="Password" bind:value={password} />

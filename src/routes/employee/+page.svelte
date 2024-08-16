@@ -6,12 +6,14 @@
 		faAngleDoubleLeft,
 		faAngleDoubleRight,
 		faAngleLeft,
-		faAngleRight,
-		faFlag
+		faAngleRight
 	} from '@fortawesome/free-solid-svg-icons';
 	import { calculateAge, getLengthOfStay } from './util';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import type GetEmployee from '$lib/models/GetEmployee';
+	import { sendRequest } from '$lib/connector/apiconnector';
+	import { lastEmployeeId } from '$lib/store';
+	import { browser } from '$app/environment';
 
 	const modalStore = getModalStore();
 
@@ -33,12 +35,10 @@
 	$: navBackward = currentPage == lastPage;
 
 	const getEmployees = () => {
-		fetch(`/api/employee?page=${currentPage}`)
-			.then((res) => res.json())
-			.then((res) => {
-				employees = res.employees;
-				lastPage = res.totalCount > 0 ? Math.trunc(res.totalCount / 10) : 0;
-			});
+		sendRequest(`/api/employee?page=${currentPage}`).then((res) => {
+			employees = res.employees;
+			lastPage = res.totalCount > 0 ? Math.trunc(res.totalCount / 10) : 0;
+		});
 	};
 
 	const navigate = (page: number) => {
@@ -49,6 +49,14 @@
 	const onAddEmployee = () => {
 		modalStore.trigger(modal);
 	};
+
+	lastEmployeeId.subscribe((value) => {
+		if (browser && value > 0) {
+			getEmployees();
+			currentPage = 0;
+			lastEmployeeId.set(0);
+		}
+	});
 </script>
 
 <div class="flex justify-center">
