@@ -10,10 +10,9 @@
 	import { sendRequest } from '$lib/connector/apiconnector';
 	import { lastEmployeeId } from '$lib/store';
 
-	export let parent: SvelteComponent;
-
 	const modalStore = getModalStore();
 
+	let employeeId = 0;
 	let firstName = '';
 	let lastName = '';
 	let middleName = '';
@@ -25,24 +24,62 @@
 	let contacts: Contact[] = [{}];
 	let addresses: Address[] = [{}];
 
+	// Update Scenario will occur if an employee ID is detected
+	if ($modalStore[0].value) {
+		sendRequest('/api/employee/byId?id=' + $modalStore[0].value.employeeId).then((res) => {
+			employeeId = res.employeeId;
+			firstName = res.firstName;
+			lastName = res.lastName;
+			middleName = res.middleName;
+			gender = res.gender;
+			maritalStatus = res.maritalStatus;
+			currentPosition = res.currentPosition;
+			contacts = res.contacts;
+			addresses = res.addresses;
+			birthDate = moment(res.birthDate).format('yyyy-MM-DD');
+			hireDate = moment(res.hireDate).format('yyyy-MM-DD');
+		});
+	}
+
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(firstName);
 
-		sendRequest('/api/employee', 'POST', {
-			firstName,
-			lastName,
-			middleName,
-			birthDate: formatDate(birthDate),
-			gender,
-			maritalStatus,
-			currentPosition,
-			hireDate: formatDate(hireDate),
-			contacts,
-			addresses
-		}).then((res) => {
-			modalStore.close();
-			lastEmployeeId.update(() => res.data.createEmployee);
-		});
+		if (employeeId) {
+			sendRequest('/api/employee', 'PATCH', {
+				employeeId,
+				firstName,
+				lastName,
+				middleName,
+				gender,
+				maritalStatus,
+				currentPosition,
+				contacts,
+				addresses,
+				clearContacts: contacts.length == 0,
+				clearAddresses: addresses.length == 0,
+				birthDate: formatDate(birthDate),
+				hireDate: formatDate(hireDate)
+			}).then((res) => {
+				modalStore.close();
+				lastEmployeeId.update(() => res.data.updateEmployee);
+			});
+		} else {
+			sendRequest('/api/employee', 'POST', {
+				firstName,
+				lastName,
+				middleName,
+				birthDate: formatDate(birthDate),
+				gender,
+				maritalStatus,
+				currentPosition,
+				hireDate: formatDate(hireDate),
+				contacts,
+				addresses
+			}).then((res) => {
+				modalStore.close();
+				lastEmployeeId.update(() => res.data.createEmployee);
+			});
+		}
 	}
 
 	const formatDate = (date: string) => {
@@ -75,22 +112,30 @@
 			addresses = addresses;
 		}
 	};
-</script>
 
-<!-- @component This example creates a simple form modal. -->
+	const deleteEmployee = () => {
+		sendRequest('/api/employee/byId?id=' + employeeId, 'DELETE').then((res) =>
+			lastEmployeeId.set(res)
+		);
+	};
+</script>
 
 {#if $modalStore[0]}
 	<div class="modal-example-form card p-4 w-modal shadow-xl space-y-4">
 		<article class="edit-form-dialog">
 			<header class="text-2xl font-bold ml-5">
-				<button aria-label="Close" rel="prev" id="close-dialog"></button>
+				<button aria-label="Close" id="close-dialog"></button>
 				<h3 id="edit-employee-dialog-title" class="mb-2">NEW EMPLOYEE REGISTRATION</h3>
 			</header>
 			<section class="ml-5">
 				<button class="btn variant-filled-primary" id="save" on:click={onFormSubmit}>
 					<Fa icon={faSave}></Fa> &nbspSave
 				</button>
-				<button id="delete" class="btn variant-ghost hidden">
+				<button
+					id="delete"
+					class="btn variant-ghost {employeeId == 0 ? 'hidden' : ''}"
+					on:click={deleteEmployee}
+				>
 					<Fa icon={faTrash} /> &nbspDelete
 				</button>
 			</section>
@@ -109,6 +154,7 @@
 							id="firstName"
 							class="input"
 							bind:value={firstName}
+							required
 						/>
 						<small id="firstName-helper"></small>
 					</label>
@@ -238,7 +284,7 @@
 						</tbody>
 					</table>
 					<div class="text-right">
-						<a href="#" on:click={() => addNew('contact')}>Add new</a>
+						<button on:click={() => addNew('contact')}>Add new</button>
 					</div>
 
 					<h6 class="mt-5 mb-2">Address Info:</h6>
@@ -287,7 +333,7 @@
 						</tbody>
 					</table>
 					<div class="text-right">
-						<a href="#" on:click={() => addNew('address')}>Add new</a>
+						<button on:click={() => addNew('address')}>Add new</button>
 					</div>
 				</div>
 			</form>

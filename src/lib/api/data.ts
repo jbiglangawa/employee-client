@@ -108,7 +108,7 @@ const updateEmployee = (employee: UpdateEmployee, cookies: Cookies) => {
         mutation UpdateEmployee($employee: UpdateEmployeeInput!) {
             updateEmployee(employee: $employee)
         }`,
-		employee,
+		{ employee },
 		cookies
 	);
 };

@@ -6,7 +6,9 @@
 		faAngleDoubleLeft,
 		faAngleDoubleRight,
 		faAngleLeft,
-		faAngleRight
+		faAngleRight,
+		faEdit,
+		faTrash
 	} from '@fortawesome/free-solid-svg-icons';
 	import { calculateAge, getLengthOfStay } from './util';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
@@ -46,8 +48,18 @@
 		getEmployees();
 	};
 
-	const onAddEmployee = () => {
-		modalStore.trigger(modal);
+	const onAddEmployee = (employeeId?: Number) => {
+		let modalSettings = { ...modal };
+		if (employeeId) {
+			modalSettings.value = { employeeId };
+		}
+		modalStore.trigger(modalSettings);
+	};
+
+	const onDeleteEmployee = (employeeId: Number) => {
+		sendRequest('/api/employee/byId?id=' + employeeId, 'DELETE').then((res) =>
+			lastEmployeeId.set(res)
+		);
 	};
 
 	lastEmployeeId.subscribe((value) => {
@@ -62,7 +74,7 @@
 <div class="flex justify-center">
 	<div class="employee-wrapper">
 		<section class="flex w-full mb-2">
-			<button type="button" class="btn variant-filled-surface" on:click={onAddEmployee}>
+			<button type="button" class="btn variant-filled-surface" on:click={() => onAddEmployee()}>
 				<span>Add</span>
 			</button>
 		</section>
@@ -75,6 +87,7 @@
 						<th>Primary Contact Info</th>
 						<th>Age</th>
 						<th># of Years in the Company</th>
+						<th class="table-cell-fit"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -91,6 +104,14 @@
 							<td>{primaryContact ? primaryContact.contactInfo : ''}</td>
 							<td>{calculateAge(row.birthDate)}</td>
 							<td>{getLengthOfStay(moment(row.hireDate))}</td>
+							<td class="table-cell-fit">
+								<button class="btn" on:click={() => onAddEmployee(row.employeeId)}
+									><Fa icon={faEdit} /></button
+								>
+								<button class="btn" on:click={() => onDeleteEmployee(row.employeeId)}
+									><Fa icon={faTrash} /></button
+								>
+							</td>
 						</tr>
 					{/each}
 				</tbody>
