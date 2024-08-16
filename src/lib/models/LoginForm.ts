@@ -1,4 +1,4 @@
 export interface LoginForm {
-	username: String;
-	password: String;
+  username: String;
+  password: String;
 }

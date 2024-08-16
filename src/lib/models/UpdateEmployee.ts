@@ -1,6 +1,6 @@
-import type GetEmployee from './GetEmployee';
+import type GetEmployee from "./GetEmployee";
 
 export default interface UpdateEmployee extends GetEmployee {
-	clearContacts: Boolean;
-	clearAddresses: Boolean;
+  clearContacts: Boolean;
+  clearAddresses: Boolean;
 }

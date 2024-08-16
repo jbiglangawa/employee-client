@@ -1,4 +1,4 @@
 export default interface PageSize {
-	page: Number;
-	size: Number;
+  page: Number;
+  size: Number;
 }
