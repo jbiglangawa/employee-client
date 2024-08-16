@@ -1,4 +1,4 @@
-import { SERVER_URL } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 import type CreateEmployee from "$lib/models/CreateEmployee";
 import type PageSize from "$lib/models/PageSize";
 import type UpdateEmployee from "$lib/models/UpdateEmployee";
@@ -12,7 +12,7 @@ import Util from "../util";
  * @returns
  */
 const sendAuthRequest = (query: String, variables: any, cookies: Cookies) => {
-  return fetch(SERVER_URL, {
+  return fetch(env.API_SERVER_URL, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -54,7 +54,7 @@ const getAllEmployees = (pageSize: PageSize, cookies: Cookies) => {
             }
         }`,
     { pageSize },
-    cookies,
+    cookies
   );
 };
 
@@ -86,7 +86,7 @@ const getEmployeeById = (employeeId: Number, cookies: Cookies) => {
             }
         }`,
     { employeeId },
-    cookies,
+    cookies
   );
 };
 
@@ -97,7 +97,7 @@ const createEmployee = (employee: CreateEmployee, cookies: Cookies) => {
             createEmployee(employee: $employee)
         }`,
     { employee },
-    cookies,
+    cookies
   );
 };
 
@@ -108,7 +108,7 @@ const updateEmployee = (employee: UpdateEmployee, cookies: Cookies) => {
             updateEmployee(employee: $employee)
         }`,
     { employee },
-    cookies,
+    cookies
   );
 };
 
@@ -119,7 +119,7 @@ const deleteEmployeeById = (employeeId: Number, cookies: Cookies) => {
             deleteEmployee(employeeId: $employeeId)
         }`,
     { employeeId },
-    cookies,
+    cookies
   );
 };
 

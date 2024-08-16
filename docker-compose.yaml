@@ -6,6 +6,8 @@ services:
       - 3000:3000
     networks:
       - employee-app_employee-service-network
+    environment:
+      - API_SERVER_URL=http://employee-service:8080/graphql
 networks:
   employee-app_employee-service-network:
     external: true

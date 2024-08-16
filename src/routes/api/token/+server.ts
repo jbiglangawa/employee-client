@@ -1,4 +1,4 @@
-import { SERVER_URL } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 import type { LoginForm } from "$lib/models/LoginForm";
 import util from "$lib/util.js";
 import { json } from "@sveltejs/kit";
@@ -14,7 +14,7 @@ export async function POST({ request, cookies }) {
             }
         }`;
 
-  const res = await fetch(SERVER_URL, {
+  const res = await fetch(env.API_SERVER_URL, {
     method: "POST",
     headers: {
       "content-type": "application/json",
