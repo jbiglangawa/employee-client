@@ -12,8 +12,6 @@
 	import { calculateAge, getLengthOfStay } from './util';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import type GetEmployee from '$lib/models/GetEmployee';
-	import type Contact from '$lib/models/Contact';
-	import type Address from '$lib/models/Address';
 
 	const modalStore = getModalStore();
 

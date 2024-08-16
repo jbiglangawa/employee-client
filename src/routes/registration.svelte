@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { SvelteComponent } from 'svelte';
 
-	// Stores
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import Fa from 'svelte-fa';
 	import { faClose, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -9,8 +8,9 @@
 	import type Contact from '$lib/models/Contact';
 	import type Address from '$lib/models/Address';
 
-	// Props
 	export let parent: SvelteComponent;
+
+	const modalStore = getModalStore();
 
 	let firstName = '';
 	let lastName = '';
@@ -22,8 +22,6 @@
 	let hireDate = '';
 	let contacts: Contact[] = [{}];
 	let addresses: Address[] = [{}];
-
-	const modalStore = getModalStore();
 
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(firstName);
@@ -73,7 +71,6 @@
 	};
 
 	const removeFromArray = (field: string, i: number) => {
-		console.log(field, i);
 		if (field == 'contact') {
 			contacts.splice(i, 1);
 			contacts = contacts;
