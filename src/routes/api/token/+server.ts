@@ -24,7 +24,6 @@ export async function POST({ request, cookies }) {
       variables: { loginForm },
     }),
   });
-
   if (res.status == 200) {
     const resJson = await res.json();
     util.saveTokenToStorage(resJson.data.getToken, cookies);

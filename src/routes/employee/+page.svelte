@@ -10,7 +10,7 @@
 		faEye,
 		faTrash
 	} from '@fortawesome/free-solid-svg-icons';
-	import { calculateAge, getLengthOfStay } from './util';
+	import { calculateAge, getLengthOfStay } from '$lib/util/util';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import type GetEmployee from '$lib/models/GetEmployee';
 	import { sendRequest } from '$lib/connector';
