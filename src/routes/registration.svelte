@@ -25,6 +25,20 @@
 	let contacts: Contact[] = [{}];
 	let addresses: Address[] = [{}];
 
+	$: primaryContactIndex = contacts?.findIndex(c => c.isPrimary)
+	$: primaryAddressIndex = addresses?.findIndex(a => a.isPrimary)
+
+	const triggerContactsReactivity = () => {
+		setTimeout(() => {
+			contacts = [...contacts]
+		}, 50)
+	}
+	const triggerAddressReactivity = () => {
+		setTimeout(() => {
+			addresses = [...addresses]
+		}, 50)
+	}
+
 	// Update Scenario will occur if an employee ID is detected
 	if ($modalStore[0].value) {
 		sendRequest(
@@ -171,7 +185,6 @@
 							id="firstName"
 							class="input"
 							bind:value={firstName}
-							required
 							disabled={!$page.data.post.isUserAndAdmin}
 						/>
 						<small id="firstName-helper"></small>
@@ -301,8 +314,9 @@
 										><input
 											type="checkbox"
 											class="checkbox"
+											on:change={triggerContactsReactivity}
 											bind:checked={contact.isPrimary}
-											disabled={!$page.data.post.isUserAndAdmin}
+											disabled={!$page.data.post.isUserAndAdmin || (primaryContactIndex >= 0 && i != primaryContactIndex)}
 										/>
 									</td>
 									<td>
@@ -321,7 +335,7 @@
 					</table>
 					{#if $page.data.post.isUserAndAdmin}
 					<div class="text-right">
-						<button on:click={() => addNew('contact')}>Add new</button>
+						<button type="button" on:click={() => addNew('contact')}>Add new</button>
 					</div>
 					{/if}
 					<h6 class="mt-5 mb-2">Address Info:</h6>
@@ -363,8 +377,9 @@
 										><input
 											type="checkbox"
 											class="checkbox"
+											on:change={triggerAddressReactivity}
 											bind:checked={address.isPrimary}
-											disabled={!$page.data.post.isUserAndAdmin}
+											disabled={!$page.data.post.isUserAndAdmin ||  (primaryAddressIndex >= 0 && i != primaryAddressIndex)}
 										/></td
 									>
 									<td>
